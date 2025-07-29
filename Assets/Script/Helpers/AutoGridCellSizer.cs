@@ -33,8 +33,21 @@ namespace CardMatch
         {
             grid = GetComponent<GridLayoutGroup>();
             rt = GetComponent<RectTransform>();
-            ResizeGrid();
         }
+        
+        public void UpdateGridLayout()
+        {
+            if (grid == null)
+            {
+                grid = GetComponent<GridLayoutGroup>();
+                rt = GetComponent<RectTransform>();
+            }
+            
+            ResizeGrid();
+            // Force layout rebuild to ensure proper positioning
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+        }
+        
 
         void ResizeGrid()
         {

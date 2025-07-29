@@ -8,5 +8,6 @@ namespace CardMatch
         void UpdateUI();          
         void Show();               
         void Hide();              
+        void HandleContext(UIContextData contextData);
     }
 }

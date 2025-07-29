@@ -19,7 +19,6 @@ namespace CardMatch
 
         public void OnPanelClick()
         {
-            Debug.Log("OnPanelClick");
             if (isFlipping) return;
 
             StartCoroutine(FlipPanelCoroutine(isFlipped ? 0 : 180, !isFlipped,
@@ -54,16 +53,13 @@ namespace CardMatch
             GetComponent<Button>().interactable = !isMatched;
         }
         
-        public CellState GetState(int cellIndex)
+        public CellState GetState(int cellIndex) => new CellState
         {
-            return new CellState
-            {
-                cellID = cellID,
-                isMatched = !GetComponent<Button>().interactable,
-                isFlipped = isFlipped,
-                cellIndex = cellIndex
-            };
-        }
+            cellID = cellID,
+            isMatched = !GetComponent<Button>().interactable,
+            isFlipped = isFlipped,
+            cellIndex = cellIndex
+        };
 
         private IEnumerator FlipPanelCoroutine(float targetRotation, bool flipState, System.Action onComplete)
         {

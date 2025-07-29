@@ -2,15 +2,31 @@ using System.IO;
 using UnityEngine;
 namespace CardMatch
 {
-    public static class GameProgressManager
+    public static class SaveSystem
     {
         private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "save.json");
+        
+        // Global static game data
+        public static SaveData GameData { get; private set; }
+
+        public static void Initialize()
+        {
+            GameData = LoadOrInitialize();
+        }
+
+        public static void Save()
+        {
+            if (GameData != null)
+            {
+                string json = JsonUtility.ToJson(GameData, true);
+                File.WriteAllText(SavePath, json);
+            }
+        }
 
         public static void Save(SaveData data)
         {
-            string json = JsonUtility.ToJson(data, true);
-            File.WriteAllText(SavePath, json);
-            Debug.Log("Saved progress to: " + SavePath);
+            GameData = data;
+            Save();
         }
 
         public static SaveData LoadOrInitialize()
@@ -31,8 +47,8 @@ namespace CardMatch
             if (File.Exists(SavePath))
             {
                 File.Delete(SavePath);
-                Debug.Log("Deleted save file.");
             }
+            GameData = new SaveData();
         }
     }
 }
