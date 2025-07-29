@@ -26,6 +26,7 @@ namespace CardMatch
         public bool isGameOver = false;   // Game over when turns run out
         
         public List<CellState> cellStates = new List<CellState>();
+        public List<string> symbolArrangement = new List<string>();  // Save the symbol arrangement
         
         // Reset level-specific data (keeps level and total cells)
         public void ResetLevelData()
@@ -36,6 +37,7 @@ namespace CardMatch
             currentScore = 0;
             remainingTurns = totalCells;
             cellStates.Clear();
+            symbolArrangement.Clear();
         }
         
         // Move to next level

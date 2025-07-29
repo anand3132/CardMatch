@@ -58,9 +58,27 @@ namespace CardMatch
                 return;
             }
 
-            int pairCount = selectedPanels.Count / 2;
-            var symbols = levelManager.GenerateSymbolPairs(pairCount);
-            levelManager.Shuffle(symbols, random);
+            List<string> symbols;
+            
+            // Check if we have a saved symbol arrangement
+            if (SaveSystem.GameData.levelProgress.symbolArrangement != null && 
+                SaveSystem.GameData.levelProgress.symbolArrangement.Count == selectedPanels.Count)
+            {
+                // Use saved symbol arrangement
+                symbols = new List<string>(SaveSystem.GameData.levelProgress.symbolArrangement);
+                Debug.Log($"CellSystem: Using saved symbol arrangement for {symbols.Count} cells");
+            }
+            else
+            {
+                // Generate new symbol arrangement
+                int pairCount = selectedPanels.Count / 2;
+                symbols = levelManager.GenerateSymbolPairs(pairCount);
+                levelManager.Shuffle(symbols, random);
+                
+                // Save the symbol arrangement for future use
+                SaveSystem.GameData.levelProgress.symbolArrangement = new List<string>(symbols);
+                Debug.Log($"CellSystem: Generated and saved new symbol arrangement for {symbols.Count} cells");
+            }
 
             for (int i = 0; i < selectedPanels.Count; i++)
             {
