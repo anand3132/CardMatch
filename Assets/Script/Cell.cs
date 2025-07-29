@@ -21,6 +21,9 @@ namespace CardMatch
         {
             if (isFlipping) return;
 
+            // Play card flip sound when card is clicked
+            SoundManager.Instance?.PlayCardFlip();
+
             StartCoroutine(FlipPanelCoroutine(isFlipped ? 0 : 180, !isFlipped,
                 () => { GamePlayManager.Instance.CurrentMove(this); }));
         }

@@ -8,6 +8,7 @@ namespace CardMatch
         [Header("Manager References")]
         [SerializeField] private GamePlayManager gamePlayManager;
         [SerializeField] private UXManager uxManager;
+        [SerializeField] private SoundManager soundManager;
         
         void Awake() => FindManagers();
         
@@ -55,6 +56,9 @@ namespace CardMatch
                 
             if (uxManager == null)
                 uxManager = FindObjectOfType<UXManager>();
+                
+            if (soundManager == null)
+                soundManager = FindObjectOfType<SoundManager>();
         }
         
         private void InitializeAllManagers()
@@ -62,6 +66,7 @@ namespace CardMatch
             // Initialize SaveSystem first
            SaveSystem.Initialize();
            // Initialize managers in order
+           InitializeManager(soundManager);
            InitializeManager(gamePlayManager);
            InitializeManager(uxManager);
            
@@ -104,6 +109,7 @@ namespace CardMatch
             // Clean up in reverse order
             CleanupManager(uxManager);
             CleanupManager(gamePlayManager);
+            CleanupManager(soundManager);
         }
         
         private void CleanupManager(IManager manager)

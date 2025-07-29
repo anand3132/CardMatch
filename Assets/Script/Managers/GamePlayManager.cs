@@ -218,6 +218,9 @@ namespace CardMatch
         
         private void HandleWrongMatch(Cell cell1, Cell cell2)
         {
+            // Play mismatch sound
+            SoundManager.Instance?.PlayCardMismatch();
+            
             cell1.Reset();
             cell2.Reset();
             ReduceTurns();
@@ -225,6 +228,9 @@ namespace CardMatch
         
         private void HandleCorrectMatch(Cell cell1, Cell cell2)
         {
+            // Play match sound
+            SoundManager.Instance?.PlayCardMatch();
+            
             playCount += 2;
             currentScore += pointsPerMatch;
             SaveSystem.GameData.levelProgress.matchedCells = playCount;
@@ -286,12 +292,16 @@ namespace CardMatch
             OnGameStateChanged?.Invoke(true);
             OnScoreChanged?.Invoke(currentScore);
             
-            // Show win screen directly
+            // Play win sound and show win screen
+            SoundManager.Instance?.PlayGameWin();
             UXManager.Instance?.ShowGameWon();
         }
 
         private void GameOver()
         {
+            // Play game over sound
+            SoundManager.Instance?.PlayGameOver();
+            
             isGameActive = false;
             SaveSystem.GameData.levelProgress.isGameOver = true;
             SaveSystem.Save();
