@@ -38,6 +38,32 @@ namespace CardMatch
 
             StartCoroutine(FlipPanelCoroutine(0, false, null));
         }
+        
+        public void SetState(bool isFlipped, bool isMatched = false)
+        {
+            if (isFlipping) return;
+            
+            this.isFlipped = isFlipped;
+            
+            // Set the visual state immediately without animation
+            panelTransform.rotation = Quaternion.Euler(0, isFlipped ? 180 : 0, 0);
+            frontSide.SetActive(!isFlipped);
+            backSide.SetActive(isFlipped);
+            
+            // If matched, disable interaction
+            GetComponent<Button>().interactable = !isMatched;
+        }
+        
+        public CellState GetState(int cellIndex)
+        {
+            return new CellState
+            {
+                cellID = cellID,
+                isMatched = !GetComponent<Button>().interactable,
+                isFlipped = isFlipped,
+                cellIndex = cellIndex
+            };
+        }
 
         private IEnumerator FlipPanelCoroutine(float targetRotation, bool flipState, System.Action onComplete)
         {

@@ -99,6 +99,9 @@ namespace CardMatch
             saveData.levelProgress.bestScore = 0;
             saveData.levelProgress.remainingTurns = 4;
             
+            // Clear saved cell states for fresh start
+            saveData.levelProgress.cellStates.Clear();
+            
             // Save the reset data
             GameProgressManager.Save(saveData);
             
@@ -122,6 +125,9 @@ namespace CardMatch
             saveData.levelProgress.isGameOver = false;
             saveData.levelProgress.currentScore = 0;
             saveData.levelProgress.remainingTurns = saveData.levelProgress.totalCells;
+            
+            // Clear saved cell states for fresh start
+            saveData.levelProgress.cellStates.Clear();
             
             // Reset game state
             playCount = 0;
@@ -166,6 +172,9 @@ namespace CardMatch
             saveData.levelProgress.isGameOver = false;
             saveData.levelProgress.currentScore = 0;
             
+            // Clear saved cell states for new level
+            saveData.levelProgress.cellStates.Clear();
+            
             // Save progress
             GameProgressManager.Save(saveData);
             
@@ -196,8 +205,52 @@ namespace CardMatch
             panels = CellGenerator.GenerateCells(cellPrefab, cellParent, saveData.levelProgress.totalCells);
             PopulatePanels();
             
+            // Restore cell states from saved data
+            RestoreCellStates();
+            
             // Show the game area
             ShowGameArea();
+        }
+        
+        private void RestoreCellStates()
+        {
+            if (saveData.levelProgress.cellStates == null || saveData.levelProgress.cellStates.Count == 0)
+            {
+                // No saved states, all cells start face down
+                foreach (var cell in panels)
+                {
+                    cell.SetState(false, false);
+                }
+                return;
+            }
+            
+            // Restore each cell to its saved state
+            for (int i = 0; i < panels.Count && i < saveData.levelProgress.cellStates.Count; i++)
+            {
+                var cellState = saveData.levelProgress.cellStates[i];
+                var cell = panels[i];
+                
+                if (cell != null)
+                {
+                    cell.SetState(cellState.isFlipped, cellState.isMatched);
+                }
+            }
+        }
+        
+        private void SaveCellStates()
+        {
+            if (panels == null) return;
+            
+            saveData.levelProgress.cellStates.Clear();
+            
+            for (int i = 0; i < panels.Count; i++)
+            {
+                var cell = panels[i];
+                if (cell != null)
+                {
+                    saveData.levelProgress.cellStates.Add(cell.GetState(i));
+                }
+            }
         }
         
         private void ShowGameArea()
@@ -245,6 +298,13 @@ namespace CardMatch
                 currentScore += pointsPerMatch;
                 saveData.levelProgress.matchedCells = playCount;
                 saveData.levelProgress.currentScore = currentScore;
+                
+                // Mark both cells as matched
+                lastSelected.SetState(true, true);
+                cell.SetState(true, true);
+                
+                // Save cell states
+                SaveCellStates();
                 
                 OnScoreChanged?.Invoke(currentScore);
 
@@ -370,6 +430,25 @@ namespace CardMatch
         
         // .. !! Check if the manager is properly initialized
         public bool IsInitialized => saveData != null;
+        
+        // Debug method to show cell states
+        [ContextMenu("Debug Cell States")]
+        public void DebugCellStates()
+        {
+            if (saveData?.levelProgress.cellStates != null)
+            {
+                Debug.Log($"Saved Cell States: {saveData.levelProgress.cellStates.Count}");
+                for (int i = 0; i < saveData.levelProgress.cellStates.Count; i++)
+                {
+                    var state = saveData.levelProgress.cellStates[i];
+                    Debug.Log($"Cell {i}: ID={state.cellID}, Flipped={state.isFlipped}, Matched={state.isMatched}");
+                }
+            }
+            else
+            {
+                Debug.Log("No saved cell states");
+            }
+        }
         
     }
 }
