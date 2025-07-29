@@ -16,6 +16,7 @@ namespace CardMatch
 
         private bool isFlipped = false;
         private bool isFlipping = false;
+        private bool isMatched = false;
 
         public void OnPanelClick()
         {
@@ -38,6 +39,7 @@ namespace CardMatch
         {
             if (isFlipping) return;
 
+            isMatched = false;
             StartCoroutine(FlipPanelCoroutine(0, false, null));
         }
         
@@ -46,6 +48,7 @@ namespace CardMatch
             if (isFlipping) return;
             
             this.isFlipped = isFlipped;
+            this.isMatched = isMatched;
             
             // Set the visual state immediately without animation
             panelTransform.rotation = Quaternion.Euler(0, isFlipped ? 180 : 0, 0);
@@ -59,7 +62,7 @@ namespace CardMatch
         public CellState GetState(int cellIndex) => new CellState
         {
             cellID = cellID,
-            isMatched = !GetComponent<Button>().interactable,
+            isMatched = isMatched,
             isFlipped = isFlipped,
             cellIndex = cellIndex
         };
