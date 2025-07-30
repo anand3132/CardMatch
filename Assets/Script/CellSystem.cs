@@ -9,6 +9,9 @@ namespace CardMatch
     {
         // Static reference to current panels for global access
         private static List<Cell> currentPanels;
+        private static Cell lastSelected;
+        private static int counter = 0;
+        private static bool wasWrongMatch = false;
         
         public static void SetCurrentPanels(List<Cell> panels)
         {
@@ -38,6 +41,70 @@ namespace CardMatch
 
             return cells;
         }
+        
+        public static void ResetAllCells()
+        {
+            currentPanels?.ForEach(cell => cell.Reset());
+        }
+        
+        public static void HandleCorrectMatch(Cell cell1, Cell cell2)
+        {
+            cell1.SetState(true, true);
+            cell2.SetState(true, true);
+            
+            // Save cell states after match
+            SaveCellStates(currentPanels);
+        }
+        
+        public static void HandleWrongMatch(Cell cell1, Cell cell2)
+        {
+            cell1.Reset();
+            cell2.Reset();
+        }
+        
+        public static bool ProcessCellMove(Cell cell)
+        {
+            wasWrongMatch = false; 
+            
+            if (counter == 0)
+            {
+                lastSelected = cell;
+                counter = 1;
+                return false; // No match yet
+            }
+            else
+            {
+                counter = 0;
+                
+                if (lastSelected.cellID != cell.cellID)
+                {
+                    HandleWrongMatch(lastSelected, cell);
+                    wasWrongMatch = true; 
+                    return false; // Wrong match
+                }
+                else
+                {
+                    HandleCorrectMatch(lastSelected, cell);
+                    return true; // Correct match
+                }
+            }
+        }
+        
+        public static void ResetCellSelection()
+        {
+            lastSelected = null;
+            counter = 0;
+            wasWrongMatch = false;
+        }
+        
+        public static bool IsWrongMatch()
+        {
+            return wasWrongMatch;
+        }
+        
+        public static List<Cell> GetCurrentPanels() => currentPanels;
+        
+        public static int GetTotalCells() => SaveSystem.GameData?.levelProgress.totalCells ?? 0;
         
         public static void PopulateCells(List<Cell> Cells, LevelManager levelManager, System.Random random, int totalCells)
         {

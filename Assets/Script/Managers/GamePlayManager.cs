@@ -8,8 +8,7 @@ namespace CardMatch
     {
         #region Fields and Properties
         
-        private Cell lastSelected;
-        private int counter = 0;
+
         
         [Header("Game Settings")]
         [SerializeField] private GameObject cellPrefab;
@@ -90,15 +89,12 @@ namespace CardMatch
             SaveSystem.GameData.levelProgress.ResetLevelData();
             ResetGameState();
             SaveSystem.Save();
-            ResetAllCells();
+            CellSystem.ResetAllCells();
             InitializeGame();
             TriggerUIEvents();
         }
         
-        private void ResetAllCells()
-        {
-            panels?.ForEach(cell => cell.Reset());
-        }
+
         
         public void NextLevel()
         {
@@ -141,9 +137,6 @@ namespace CardMatch
             // Generate cells using CellSystem
             panels = CellSystem.GenerateCells(cellPrefab, cellParent, SaveSystem.GameData.levelProgress.totalCells);
             
-            // Ensure CellSystem has the current panels reference
-            CellSystem.SetCurrentPanels(panels);
-            
             // Populate cells with symbols
             CellSystem.PopulateCells(panels, levelManager, random, SaveSystem.GameData.levelProgress.totalCells);
             
@@ -151,11 +144,6 @@ namespace CardMatch
             CellSystem.RestoreCellStates(panels);
             
             // Show game area
-            ShowGameArea();
-        }
-        
-        private void ShowGameArea()
-        {
             cellParent?.gameObject.SetActive(true);
         }
         
@@ -170,19 +158,17 @@ namespace CardMatch
         {
             playCount = SaveSystem.GameData.levelProgress.matchedCells;
             movesCount = 0;
-            counter = 0;
-            lastSelected = null;
+            CellSystem.ResetCellSelection();
         }
         
         private void ResetGameState()
         {
             playCount = 0;
-            counter = 0;
             movesCount = 0;
-            lastSelected = null;
             isGameActive = true;
             currentScore = 0;
             remainingTurns = SaveSystem.GameData.levelProgress.totalCells;
+            CellSystem.ResetCellSelection();
         }
         
         #endregion
@@ -194,39 +180,26 @@ namespace CardMatch
             if (!isGameActive) return;
             
             movesCount++;
-
-            if (counter == 0)
+            bool isCorrectMatch = CellSystem.ProcessCellMove(cell);
+            
+            if (isCorrectMatch)
             {
-                lastSelected = cell;
-                counter++;
-                return;
+                HandleCorrectMatch();
             }
-
-            counter = 0;
-
-            if (lastSelected.cellID != cell.cellID)
+            else if (CellSystem.IsWrongMatch())
             {
-                HandleWrongMatch(lastSelected, cell);
+                HandleWrongMatch();
             }
-            else
-            {
-                HandleCorrectMatch(lastSelected, cell);
-            }
-
-            lastSelected = null;
         }
         
-        private void HandleWrongMatch(Cell cell1, Cell cell2)
+        private void HandleWrongMatch()
         {
             // Play mismatch sound
             SoundManager.Instance?.PlayCardMismatch();
-            
-            cell1.Reset();
-            cell2.Reset();
             ReduceTurns();
         }
         
-        private void HandleCorrectMatch(Cell cell1, Cell cell2)
+        private void HandleCorrectMatch()
         {
             // Play match sound
             SoundManager.Instance?.PlayCardMatch();
@@ -235,12 +208,6 @@ namespace CardMatch
             currentScore += pointsPerMatch;
             SaveSystem.GameData.levelProgress.matchedCells = playCount;
             SaveSystem.GameData.levelProgress.currentScore = currentScore;
-            
-            cell1.SetState(true, true);
-            cell2.SetState(true, true);
-            
-            // Save cell states after match
-            CellSystem.SaveCellStates(panels);
             
             OnScoreChanged?.Invoke(currentScore);
 
@@ -334,8 +301,8 @@ namespace CardMatch
         public bool IsGameActive => isGameActive;
         public bool IsGameOver => SaveSystem.GameData?.levelProgress.isGameOver ?? false;
         public bool IsLevelCompleted => SaveSystem.GameData?.levelProgress.isCompleted ?? false;
-        public int GetTotalCells() => SaveSystem.GameData?.levelProgress.totalCells ?? 0;
-        public List<Cell> GetCurrentPanels() => panels;
+        public int GetTotalCells() => CellSystem.GetTotalCells();
+        public List<Cell> GetCurrentPanels() => CellSystem.GetCurrentPanels();
         
         #endregion
     }
