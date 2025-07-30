@@ -23,7 +23,7 @@ namespace CardMatch
                 var gameManager = GamePlayManager.Instance;
                 if (gameManager != null && gameManager.IsInitialized)
                 {
-                    CellSystem.SaveCellStates(gameManager.GetCurrentPanels());
+                    CellSystem.SaveCellStates(CellSystem.GetCurrentPanels());
                 }
                 SaveSystem.Save();
             }
@@ -38,7 +38,7 @@ namespace CardMatch
                 var gameManager = GamePlayManager.Instance;
                 if (gameManager != null && gameManager.IsInitialized)
                 {
-                    CellSystem.SaveCellStates(gameManager.GetCurrentPanels());
+                    CellSystem.SaveCellStates(CellSystem.GetCurrentPanels());
                 }
                 SaveSystem.Save();
             }

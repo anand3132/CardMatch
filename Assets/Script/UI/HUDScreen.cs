@@ -51,7 +51,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
     public void UpdateUI() => RefreshFromGameManager();
 
     // Set local data and update UI elements
-    public void SetData(int score, int turns, int level)
+    private void SetData(int score, int turns, int level)
     {
         this.score = score;
         this.turns = turns;
@@ -102,7 +102,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
     public void HandleContext(UIContextData contextData) => RefreshFromGameManager();
         
     // Refresh HUD data from GamePlayManager
-    public void RefreshFromGameManager()
+    private void RefreshFromGameManager()
     {
         if (GamePlayManager.Instance.IsInitialized)
         {

@@ -37,7 +37,7 @@ namespace CardMatch
         }
         
         // Update grid layout immediately and force rebuild
-        public void UpdateGridLayout()
+        internal void UpdateGridLayout()
         {
             if (grid == null)
             {

@@ -219,7 +219,7 @@ namespace CardMatch
             
             OnScoreChanged?.Invoke(currentScore);
 
-            if (playCount >= GetTotalCells())
+            if (playCount >= CellSystem.GetTotalCells())
             {
                 LevelCompleted();
                 return;
@@ -312,8 +312,6 @@ namespace CardMatch
         public bool IsGameActive => isGameActive;
         public bool IsGameOver => SaveSystem.GameData?.levelProgress.isGameOver ?? false;
         public bool IsLevelCompleted => SaveSystem.GameData?.levelProgress.isCompleted ?? false;
-        public int GetTotalCells() => CellSystem.GetTotalCells();
-        public List<Cell> GetCurrentPanels() => CellSystem.GetCurrentPanels();
         
         #endregion
     }

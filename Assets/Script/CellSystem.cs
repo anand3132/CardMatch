@@ -14,7 +14,8 @@ namespace CardMatch
         private static int counter = 0;
         private static bool wasWrongMatch = false;
         
-        public static void SetCurrentPanels(List<Cell> panels)
+        // Set current panels for internal use
+        private static void SetCurrentPanels(List<Cell> panels)
         {
             currentPanels = panels;
         }
@@ -44,13 +45,14 @@ namespace CardMatch
             return cells;
         }
         
-        public static void ResetAllCells()
+        // Reset all cells to unflipped state
+        internal static void ResetAllCells()
         {
             currentPanels?.ForEach(cell => cell.Reset());
         }
         
         // Set matched cells state and save to persistence
-        public static void HandleCorrectMatch(Cell cell1, Cell cell2)
+        private static void HandleCorrectMatch(Cell cell1, Cell cell2)
         {
             cell1.SetState(true, true);
             cell2.SetState(true, true);
@@ -59,7 +61,8 @@ namespace CardMatch
             SaveCellStates(currentPanels);
         }
         
-        public static void HandleWrongMatch(Cell cell1, Cell cell2)
+        // Handle wrong match by resetting cells
+        private static void HandleWrongMatch(Cell cell1, Cell cell2)
         {
             cell1.Reset();
             cell2.Reset();
@@ -94,6 +97,7 @@ namespace CardMatch
             }
         }
         
+        // Reset cell selection state
         public static void ResetCellSelection()
         {
             lastSelected = null;
@@ -101,14 +105,17 @@ namespace CardMatch
             wasWrongMatch = false;
         }
         
+        // Check if last move was a wrong match
         public static bool IsWrongMatch()
         {
             return wasWrongMatch;
         }
         
-        public static List<Cell> GetCurrentPanels() => currentPanels;
+        // Get current panels for internal use
+        internal static List<Cell> GetCurrentPanels() => currentPanels;
         
-        public static int GetTotalCells() => SaveSystem.GameData?.levelProgress.totalCells ?? 0;
+        // Get total cells count for internal use
+        internal static int GetTotalCells() => SaveSystem.GameData?.levelProgress.totalCells ?? 0;
         
         // Populate cells with symbols using saved arrangement or generate new one
         public static void PopulateCells(List<Cell> Cells, LevelManager levelManager, System.Random random, int totalCells)

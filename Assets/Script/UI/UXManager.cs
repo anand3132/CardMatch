@@ -43,7 +43,7 @@ namespace CardMatch
         }
 
         // Shows a screen with specific context data
-        public void ShowScreenWithContext(IUIScreen screen, UIContextData contextData)
+        private void ShowScreenWithContext(IUIScreen screen, UIContextData contextData)
         {
             SwitchTo(screen);
             screen.HandleContext(contextData);
