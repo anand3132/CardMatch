@@ -27,6 +27,7 @@ namespace CardMatch
         
         public bool IsInitialized { get; private set; }
         
+        // Initialize audio sources and load saved settings
         public void Initialize()
         {
             if (IsInitialized) return;
@@ -38,6 +39,7 @@ namespace CardMatch
             Debug.Log($"SoundManager: Initialized successfully");
         }
         
+        // Save settings and stop all audio
         public void Cleanup()
         {
             if (!IsInitialized) return;
@@ -53,6 +55,7 @@ namespace CardMatch
         
         #region Audio Source Setup
         
+        // Create SFX source if not assigned and apply volume settings
         private void SetupAudioSources()
         {
             // Create SFX source if not assigned
@@ -111,7 +114,7 @@ namespace CardMatch
         
         #region Audio Control
         
-        // Plays a sound effect with current SFX volume
+        // Play a sound effect with current SFX volume
         private void PlaySFX(AudioClip clip)
         {
             if (clip != null && sfxSource != null && !isMuted)
@@ -129,7 +132,7 @@ namespace CardMatch
             }
         }
         
-        // Toggles mute state
+        // Toggle mute state
         public void ToggleMute()
         {
             isMuted = !isMuted;
@@ -137,7 +140,7 @@ namespace CardMatch
             SaveAudioSettings();
         }
         
-        // Sets master volume (0-1)
+        // Set master volume (0-1)
         public void SetMasterVolume(float volume)
         {
             masterVolume = Mathf.Clamp01(volume);
@@ -145,7 +148,7 @@ namespace CardMatch
             SaveAudioSettings();
         }
         
-        // Sets SFX volume (0-1)
+        // Set SFX volume (0-1)
         public void SetSFXVolume(float volume)
         {
             sfxVolume = Mathf.Clamp01(volume);

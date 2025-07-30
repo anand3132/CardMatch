@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 namespace CardMatch
 {
+    // Automatically adjusts grid layout based on cell count and available space
     [RequireComponent(typeof(GridLayoutGroup))]
     public class AutoGridCellSizer : MonoBehaviour
     {
@@ -35,6 +36,7 @@ namespace CardMatch
             rt = GetComponent<RectTransform>();
         }
         
+        // Update grid layout immediately and force rebuild
         public void UpdateGridLayout()
         {
             if (grid == null)
@@ -83,6 +85,7 @@ namespace CardMatch
             WarnIfGridNotFilled(totalItems, columnCount);
         }
 
+        // Calculate optimal rectangular grid dimensions
         void CalculateRectangularGrid(int itemCount, out int columns, out int rows)
         {
             // Try to find best rectangular grid shape: width ≈ height

@@ -2,6 +2,7 @@ using CardMatch;
 using UnityEngine;
 using TMPro;
 
+// HUD screen displaying score, turns, and level information
 public class HUDScreen : MonoBehaviour, IUIScreen
 {
     [Header("UI Panel")]
@@ -16,6 +17,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
     private int turns;
     private int level;
 
+    // Initialize HUD panel and set default values
     public void Initialize()
     {
         if (uiPanel != null)
@@ -48,6 +50,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
 
     public void UpdateUI() => RefreshFromGameManager();
 
+    // Set local data and update UI elements
     public void SetData(int score, int turns, int level)
     {
         this.score = score;
@@ -63,6 +66,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
         if (levelText != null) levelText.text = $"Level: {level}";
     }
     
+    // Show HUD and subscribe to game events
     public void Show() 
     { 
         uiPanel?.SetActive(true);
@@ -70,18 +74,21 @@ public class HUDScreen : MonoBehaviour, IUIScreen
         SubscribeToGameEvents();
     }
     
+    // Hide HUD and unsubscribe from game events
     public void Hide() 
     { 
        uiPanel?.SetActive(false);
        UnsubscribeFromGameEvents();
     }
     
+    // Subscribe to score and turns change events
     private void SubscribeToGameEvents()
     {
         GamePlayManager.Instance.OnScoreChanged += OnScoreChanged;
         GamePlayManager.Instance.OnTurnsChanged += OnTurnsChanged;
     }
     
+    // Unsubscribe from score and turns change events
     private void UnsubscribeFromGameEvents()
     {
         GamePlayManager.Instance.OnScoreChanged -= OnScoreChanged;
@@ -94,6 +101,7 @@ public class HUDScreen : MonoBehaviour, IUIScreen
     
     public void HandleContext(UIContextData contextData) => RefreshFromGameManager();
         
+    // Refresh HUD data from GamePlayManager
     public void RefreshFromGameManager()
     {
         if (GamePlayManager.Instance.IsInitialized)

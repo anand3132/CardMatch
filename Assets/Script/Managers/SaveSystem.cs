@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 namespace CardMatch
 {
+    // Static system for saving and loading game data to/from JSON files
     public static class SaveSystem
     {
         private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "save.json");
@@ -9,11 +10,13 @@ namespace CardMatch
         // Global static game data
         public static SaveData GameData { get; private set; }
 
+        // Initialize save system by loading existing data or creating new
         public static void Initialize()
         {
             GameData = LoadOrInitialize();
         }
 
+        // Save current game data to file
         public static void Save()
         {
             if (GameData != null)
@@ -23,12 +26,14 @@ namespace CardMatch
             }
         }
 
+        // Save provided data and update global reference
         public static void Save(SaveData data)
         {
             GameData = data;
             Save();
         }
 
+        // Load existing save file or create new data if none exists
         public static SaveData LoadOrInitialize()
         {
             if (File.Exists(SavePath))
@@ -42,6 +47,7 @@ namespace CardMatch
             return newData;
         }
 
+        // Delete save file and reset global data
         public static void Delete()
         {
             if (File.Exists(SavePath))

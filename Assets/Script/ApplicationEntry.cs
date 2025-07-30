@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CardMatch
 {
-    // Central application entry point that manages all game systems.
+    // Central application entry point that manages all game systems lifecycle
     public class ApplicationEntry : MonoBehaviour
     {
         [Header("Manager References")]
@@ -14,6 +14,7 @@ namespace CardMatch
         
         void Start() => InitializeAllManagers();
         
+        // Handle app pause and save game state
         void OnApplicationPause(bool pauseStatus)
         {
             if (pauseStatus && SaveSystem.GameData != null)
@@ -28,6 +29,7 @@ namespace CardMatch
             }
         }
         
+        // Handle app focus loss and save game state
         void OnApplicationFocus(bool hasFocus)
         {
             if (!hasFocus && SaveSystem.GameData != null)
@@ -48,6 +50,7 @@ namespace CardMatch
             SaveSystem.Save();
         }
         
+        // Find and assign manager references if not set in inspector
         private void FindManagers()
         {
             // Find managers if not assigned in inspector
@@ -61,6 +64,7 @@ namespace CardMatch
                 soundManager = FindObjectOfType<SoundManager>();
         }
         
+        // Initialize all managers in proper order
         private void InitializeAllManagers()
         {
             // Initialize SaveSystem first
@@ -74,6 +78,7 @@ namespace CardMatch
            StartGameFlow();
         }
         
+        // Initialize a single manager and check if successful
         private void InitializeManager(IManager manager)
         {
             if (manager != null)
@@ -91,6 +96,7 @@ namespace CardMatch
             }
         }
         
+        // Start the initial game flow through UXManager
         private void StartGameFlow()
         {
             // Let UXManager handle the initial game flow
@@ -104,6 +110,7 @@ namespace CardMatch
             }
         }
         
+        // Clean up all managers in reverse order
         private void CleanupAllManagers()
         {
             // Clean up in reverse order

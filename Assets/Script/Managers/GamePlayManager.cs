@@ -4,11 +4,10 @@ using UnityEngine.UI;
 
 namespace CardMatch
 {
+    // Core game logic manager handling scoring, turns, and game state transitions
     public class GamePlayManager : Singleton<GamePlayManager>, IManager
     {
         #region Fields and Properties
-        
-
         
         [Header("Game Settings")]
         [SerializeField] private GameObject cellPrefab;
@@ -56,6 +55,7 @@ namespace CardMatch
 
         #region Game Flow Control
         
+        // Start or resume game based on current state
         public void StartGame()
         {
             if (SaveSystem.GameData.levelProgress.isGameOver)
@@ -76,6 +76,7 @@ namespace CardMatch
         
         public void StartNewGame() => ResetGame();
         
+        // Reset entire game to initial state
         public void ResetGame()
         {
             SaveSystem.GameData.levelProgress = new LevelProgressData();
@@ -84,6 +85,7 @@ namespace CardMatch
             TriggerUIEvents();
         }
         
+        // Restart current level with same settings
         public void RestartLevel()
         {
             SaveSystem.GameData.levelProgress.ResetLevelData();
@@ -93,8 +95,6 @@ namespace CardMatch
             InitializeGame();
             TriggerUIEvents();
         }
-        
-
         
         public void NextLevel()
         {
@@ -108,6 +108,7 @@ namespace CardMatch
 
         #region Game Initialization
         
+        // Initialize game session with saved state or defaults
         private void InitializeGame()
         {
             LoadSavedState();
@@ -116,6 +117,7 @@ namespace CardMatch
             TriggerUIEvents();
         }
         
+        // Generate cells, populate with symbols, and restore saved state
         private void GenerateAndSetupCells()
         {
             if (cellPrefab == null || cellHolderPrefab == null || gameAreaParent == null)
@@ -147,6 +149,7 @@ namespace CardMatch
             cellParent?.gameObject.SetActive(true);
         }
         
+        // Load saved game state into memory
         private void LoadSavedState()
         {
             remainingTurns = SaveSystem.GameData.levelProgress.remainingTurns;
@@ -154,6 +157,7 @@ namespace CardMatch
             isGameActive = !SaveSystem.GameData.levelProgress.isGameOver;
         }
         
+        // Reset session-specific data while keeping progress
         private void ResetGameSession()
         {
             playCount = SaveSystem.GameData.levelProgress.matchedCells;
@@ -161,6 +165,7 @@ namespace CardMatch
             CellSystem.ResetCellSelection();
         }
         
+        // Reset all game state to initial values
         private void ResetGameState()
         {
             playCount = 0;
@@ -175,6 +180,7 @@ namespace CardMatch
 
         #region Game Logic
         
+        // Process cell move and handle match logic
         public void CurrentMove(Cell cell)
         {
             if (!isGameActive) return;
@@ -192,6 +198,7 @@ namespace CardMatch
             }
         }
         
+        // Handle wrong match by reducing turns
         private void HandleWrongMatch()
         {
             // Play mismatch sound
@@ -199,6 +206,7 @@ namespace CardMatch
             ReduceTurns();
         }
         
+        // Handle correct match by updating score and checking level completion
         private void HandleCorrectMatch()
         {
             // Play match sound
@@ -224,6 +232,7 @@ namespace CardMatch
 
         #region Game State Management
         
+        // Reduce turns and check for game over
         private void ReduceTurns()
         {
             remainingTurns--;
@@ -239,6 +248,7 @@ namespace CardMatch
             SaveSystem.Save();
         }
 
+        // Handle level completion with bonus points and progression
         private void LevelCompleted()
         {
             isGameActive = false;
@@ -264,6 +274,7 @@ namespace CardMatch
             UXManager.Instance?.ShowGameWon();
         }
 
+        // Handle game over when turns run out
         private void GameOver()
         {
             // Play game over sound
@@ -282,6 +293,7 @@ namespace CardMatch
 
         #region UI Events
         
+        // Trigger UI update events
         private void TriggerUIEvents()
         {
             OnTurnsChanged?.Invoke(remainingTurns);
@@ -295,7 +307,6 @@ namespace CardMatch
         public int CurrentMoves => movesCount;
         public int RemainingTurns => remainingTurns;
         public int CurrentScore => SaveSystem.GameData?.totalScore ?? 0;
-        // Score for current level only
         public int CurrentLevelScore => currentScore; 
         public int CurrentLevel => SaveSystem.GameData?.levelProgress.currentLevel ?? 1;
         public bool IsGameActive => isGameActive;

@@ -5,6 +5,7 @@ using TMPro;
 
 namespace CardMatch
 {
+    // Individual card cell with flip animation and state management
     public class Cell : MonoBehaviour
     {
         public RectTransform panelTransform;
@@ -18,6 +19,7 @@ namespace CardMatch
         private bool isFlipping = false;
         private bool isMatched = false;
 
+        // Handle card click and trigger flip animation
         public void OnPanelClick()
         {
             if (isFlipping) return;
@@ -35,6 +37,7 @@ namespace CardMatch
             cellID = id;
         }
 
+        // Reset cell to unflipped state with animation
         public void Reset()
         {
             if (isFlipping) return;
@@ -43,6 +46,7 @@ namespace CardMatch
             StartCoroutine(FlipPanelCoroutine(0, false, null));
         }
         
+        // Set cell visual state immediately without animation
         public void SetState(bool isFlipped, bool isMatched = false)
         {
             if (isFlipping) return;
@@ -67,6 +71,7 @@ namespace CardMatch
             cellIndex = cellIndex
         };
 
+        // Animate card flip with smooth rotation
         private IEnumerator FlipPanelCoroutine(float targetRotation, bool flipState, System.Action onComplete)
         {
             isFlipping = true;

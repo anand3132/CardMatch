@@ -9,6 +9,8 @@ namespace CardMatch
         GameWon,
         GameLost
     }
+    
+    // Versatile UI screen for game start, win, and lose states
     public class AllInOneScreen : MonoBehaviour, IUIScreen
     {
         [Header("UI Panel")]
@@ -22,6 +24,7 @@ namespace CardMatch
         private AllInOneScreenMode currentMode;
         private System.Action buttonAction;
 
+        // Initialize UI panel and validate components
         public void Initialize() 
         {
             if (uiPanel != null)
@@ -60,6 +63,7 @@ namespace CardMatch
            uiPanel?.SetActive(false);
         }
 
+        // Handle different UI contexts and set up button actions
         public void HandleContext(UIContextData contextData)
         {
             switch (contextData.context)
@@ -90,6 +94,7 @@ namespace CardMatch
             Show();
         }
 
+        // Update UI text and button based on current mode
         public void UpdateUI()
         {
             switch (currentMode)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CardMatch
 {
-    // Manages UI screen transitions and navigation.
+    // Manages UI screen transitions and navigation
     public class UXManager : Singleton<UXManager>, IManager
     {
         [SerializeField] private AllInOneScreen allInOneScreen;
@@ -13,6 +13,8 @@ namespace CardMatch
 
         // IManager Implementation
         public bool IsInitialized => allScreens != null && allScreens.Length > 0;
+        
+        // Initialize all UI screens and hide them
         public void Initialize()
         {
             allScreens = new IUIScreen[] { allInOneScreen, hudScreen };
@@ -22,6 +24,8 @@ namespace CardMatch
                 screen.Hide();
             }
         }
+        
+        // Hide all screens and clear references
         public void Cleanup()
         {
             // Hide all screens
@@ -38,7 +42,7 @@ namespace CardMatch
             currentScreen = null;
         }
 
-        // Shows a screen with specific context data. UXManager only handles screen transitions.
+        // Shows a screen with specific context data
         public void ShowScreenWithContext(IUIScreen screen, UIContextData contextData)
         {
             SwitchTo(screen);
@@ -88,6 +92,7 @@ namespace CardMatch
             ShowScreenWithContext(hudScreen, contextData);
         }
         
+        // Switch to new screen and hide current one
         private void SwitchTo(IUIScreen newScreen)
         {
             currentScreen?.Hide();

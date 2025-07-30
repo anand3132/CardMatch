@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace CardMatch
 {
+    // Static system for managing cell generation, population, and state persistence
     public class CellSystem
     {
         // Static reference to current panels for global access
@@ -18,6 +19,7 @@ namespace CardMatch
             currentPanels = panels;
         }
         
+        // Generate and instantiate cells from prefab
         public static List<Cell> GenerateCells(GameObject prefab, Transform parent, int count)
         {
             for (int i = parent.childCount - 1; i >= 0; i--)
@@ -47,6 +49,7 @@ namespace CardMatch
             currentPanels?.ForEach(cell => cell.Reset());
         }
         
+        // Set matched cells state and save to persistence
         public static void HandleCorrectMatch(Cell cell1, Cell cell2)
         {
             cell1.SetState(true, true);
@@ -62,6 +65,7 @@ namespace CardMatch
             cell2.Reset();
         }
         
+        // Process cell selection and determine match result
         public static bool ProcessCellMove(Cell cell)
         {
             wasWrongMatch = false; 
@@ -106,6 +110,7 @@ namespace CardMatch
         
         public static int GetTotalCells() => SaveSystem.GameData?.levelProgress.totalCells ?? 0;
         
+        // Populate cells with symbols using saved arrangement or generate new one
         public static void PopulateCells(List<Cell> Cells, LevelManager levelManager, System.Random random, int totalCells)
         {
             int requiredCells = totalCells;
@@ -153,6 +158,7 @@ namespace CardMatch
             }
         }
         
+        // Save only matched cells to persistence
         public static void SaveCellStates(List<Cell> panels)
         {
             if (panels == null) return;
@@ -180,6 +186,7 @@ namespace CardMatch
             SaveCellStates(currentPanels);
         }
         
+        // Restore matched cells from saved state
         public static void RestoreCellStates(List<Cell> panels)
         {
             // First, reset all cells to unflipped state
@@ -205,6 +212,7 @@ namespace CardMatch
             }
         }
         
+        // Update grid layout using AutoGridCellSizer or fallback to GridLayoutGroup
         private static void UpdateGridLayout(Transform parent)
         {
             if (parent == null) return;

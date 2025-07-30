@@ -2,10 +2,12 @@ using System.Collections.Generic;
 
 namespace CardMatch
 {
+    // Manages level-specific data like symbol generation and shuffling
     public class LevelManager
     {
         private const string availableSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+        // Generate pairs of symbols for matching game
         public List<string> GenerateSymbolPairs(int pairCount)
         {
             List<string> symbolsList = new List<string>();
@@ -18,6 +20,7 @@ namespace CardMatch
             return symbolsList;
         }
 
+        // Shuffle list using Fisher-Yates algorithm
         public void Shuffle<T>(List<T> list, System.Random rng)
         {
             for (int i = list.Count - 1; i > 0; i--)
