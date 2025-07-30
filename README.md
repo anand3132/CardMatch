@@ -1,2 +1,2 @@
 # CardMatch
-A Prototype for Alantrix Games
+A Prototype 
