@@ -115,6 +115,10 @@ namespace CardMatch
             ResetGameSession();
             GenerateAndSetupCells();
             TriggerUIEvents();
+            
+            // Debug: Show level progression and current state
+            Debug.Log($"GamePlayManager: Level {SaveSystem.GameData.levelProgress.currentLevel} with {SaveSystem.GameData.levelProgress.totalCells} cells");
+            Debug.Log(LevelProgressData.GetLevelProgressionDebug());
         }
         
         // Generate cells, populate with symbols, and restore saved state
@@ -260,8 +264,7 @@ namespace CardMatch
             // Add current level score to total score before resetting
             SaveSystem.GameData.totalScore += currentScore;
             
-            // Level increment moved to NextLevel() method to avoid double increment
-            SaveSystem.GameData.levelProgress.totalCells += 2;
+            // Reset level data (NextLevel() will handle totalCells increment)
             SaveSystem.GameData.levelProgress.matchedCells = 0;
             SaveSystem.GameData.levelProgress.currentScore = 0;
             

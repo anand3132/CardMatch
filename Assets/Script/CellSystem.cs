@@ -219,16 +219,18 @@ namespace CardMatch
             }
         }
         
-        // Update grid layout using AutoGridCellSizer or fallback to GridLayoutGroup
+        // Update grid layout using FlexibleGridLayout or fallback to GridLayoutGroup
         private static void UpdateGridLayout(Transform parent)
         {
             if (parent == null) return;
             
-            // Find AutoGridCellSizer component and update layout
-            var gridSizer = parent.GetComponent<AutoGridCellSizer>();
-            if (gridSizer != null)
+            // Find FlexibleGridLayout component and force layout update
+            var flexibleGrid = parent.GetComponent<FlexibleGridLayout>();
+            if (flexibleGrid != null)
             {
-                gridSizer.UpdateGridLayout();
+                // Force layout rebuild to ensure proper positioning
+                LayoutRebuilder.ForceRebuildLayoutImmediate(parent as RectTransform);
+                Debug.Log($"CellSystem: Updated FlexibleGridLayout for {parent.childCount} cells");
             }
             else
             {
@@ -241,7 +243,12 @@ namespace CardMatch
                     if (rectTransform != null)
                     {
                         LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+                        Debug.Log($"CellSystem: Updated GridLayoutGroup fallback for {parent.childCount} cells");
                     }
+                }
+                else
+                {
+                    Debug.LogWarning($"CellSystem: No FlexibleGridLayout or GridLayoutGroup found on {parent.name}");
                 }
             }
         }

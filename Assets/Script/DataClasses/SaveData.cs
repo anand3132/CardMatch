@@ -47,6 +47,19 @@ namespace CardMatch
             totalCells += 2;
             ResetLevelData();
         }
+        
+        // Debug method to show expected cell progression
+        public static string GetLevelProgressionDebug()
+        {
+            string debug = "Level Progression:\n";
+            int cells = 4; // Starting cells
+            for (int level = 1; level <= 15; level++)
+            {
+                debug += $"Level {level}: {cells} cells\n";
+                cells += 2;
+            }
+            return debug;
+        }
     }
 
     [Serializable]
