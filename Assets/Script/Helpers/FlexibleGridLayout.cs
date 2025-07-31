@@ -95,7 +95,6 @@ namespace CardMatch
         public override void CalculateLayoutInputVertical()
         {
             // Calculate vertical layout input
-            base.CalculateLayoutInputVertical();
         }
         
         public override void SetLayoutHorizontal()
