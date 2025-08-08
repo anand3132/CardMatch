@@ -7,9 +7,13 @@ namespace CardMatch
     {
         [SerializeField] private AllInOneScreen allInOneScreen;
         [SerializeField] private HUDScreen hudScreen;
+        
+        [Header("Hierarchy Management")]
+        [SerializeField] private Transform uxTransform; // Reference to the UX GameObject transform
 
         private IUIScreen[] allScreens;
         private IUIScreen currentScreen;
+        private Transform mainParent; // Reference to the Main parent
 
         // IManager Implementation
         public bool IsInitialized => allScreens != null && allScreens.Length > 0;
@@ -23,6 +27,15 @@ namespace CardMatch
                 screen.Initialize();
                 screen.Hide();
             }
+            
+            // Auto-find UX transform if not assigned
+            if (uxTransform == null)
+            {
+                uxTransform = transform;
+            }
+            
+            // Store reference to main parent
+            mainParent = uxTransform.parent;
         }
         
         // Hide all screens and clear references
@@ -52,6 +65,9 @@ namespace CardMatch
         // Shows the game start screen with context
         public void ShowGameStart()
         {
+            // Move UX to last position (on top) for overlay screens
+            MoveUXToLastPosition();
+            
             var contextData = UIContextData.CreateGameStart();
             
             contextData.onContinue = () => {
@@ -65,6 +81,9 @@ namespace CardMatch
         // Shows the game won screen with context
         public void ShowGameWon()
         {
+            // Move UX to last position (on top) for overlay screens
+            MoveUXToLastPosition();
+            
             var contextData = UIContextData.CreateGameWon();
             contextData.onNextLevel = () => {
                 GamePlayManager.Instance.NextLevel();
@@ -77,6 +96,9 @@ namespace CardMatch
         // Shows the game lost screen with context
         public void ShowGameLost()
         {
+            // Move UX to last position (on top) for overlay screens
+            MoveUXToLastPosition();
+            
             var contextData = UIContextData.CreateGameLost();
             contextData.onRestart = () => {
                 GamePlayManager.Instance.RestartLevel();
@@ -88,6 +110,9 @@ namespace CardMatch
         // Shows the HUD screen
         public void ShowHUD()
         {
+            // Move UX to first position (behind game) for HUD
+            MoveUXToFirstPosition();
+            
             var contextData = new UIContextData(UIContext.GameStart); // HUD doesn't need specific context
             ShowScreenWithContext(hudScreen, contextData);
         }
@@ -105,7 +130,25 @@ namespace CardMatch
                 currentScreen.UpdateUI();
             }
         }
+        
+        // Move UX to first position (behind game) for HUD
+        private void MoveUXToFirstPosition()
+        {
+            if (uxTransform != null && mainParent != null)
+            {
+                uxTransform.SetAsFirstSibling();
+                Debug.Log("UXManager: Moved UX to first position (behind game) for HUD");
+            }
+        }
+        
+        // Move UX to last position (on top) for overlay screens
+        private void MoveUXToLastPosition()
+        {
+            if (uxTransform != null && mainParent != null)
+            {
+                uxTransform.SetAsLastSibling();
+                Debug.Log("UXManager: Moved UX to last position (on top) for overlay screens");
+            }
+        }
     }
-
-
 }

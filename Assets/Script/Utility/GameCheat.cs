@@ -15,7 +15,7 @@ namespace CardMatch
         [SerializeField] private float cellFlipDelay = 0.8f; // Wait for cell flip animation
         
         private bool showCheatGUI = false;
-        private Rect windowRect = new Rect(10, 10, 400, 600); // Increased from 300x400 to 400x600
+        private Rect windowRect; // Will be initialized dynamically
         private bool isAutoPlaying = false;
         private System.Collections.IEnumerator autoPlayCoroutine;
         
@@ -27,6 +27,12 @@ namespace CardMatch
         private bool gameResetExpanded = false;
         private bool autoPlayExpanded = true;
         
+        void Start()
+        {
+            // Initialize window size dynamically based on screen height
+            InitializeWindowSize();
+        }
+        
         void Update()
         {
             // Toggle cheat GUI with F1 key (editor only)
@@ -34,6 +40,31 @@ namespace CardMatch
             {
                 ToggleCheatGUI();
             }
+        }
+        
+        private void InitializeWindowSize()
+        {
+            // Get screen dimensions
+            float screenHeight = Screen.height;
+            float screenWidth = Screen.width;
+            
+            // Calculate window dimensions
+            // Use 80% of screen height for window height
+            float windowHeight = screenHeight * 0.95f;
+            // Use 50% of screen width for window width (landscape mode)
+            float windowWidth = screenWidth * 0.5f;
+            
+            // Ensure minimum and maximum sizes
+            windowHeight = Mathf.Clamp(windowHeight, 600f, 1200f);
+            windowWidth = Mathf.Clamp(windowWidth, 400f, 800f);
+            
+            // Position window in top-left with some margin
+            float xPos = 10f;
+            float yPos = 10f;
+            
+            windowRect = new Rect(xPos, yPos, windowWidth, windowHeight);
+            
+            Debug.Log($"GameCheat: Window initialized - Screen: {screenWidth}x{screenHeight}, Window: {windowWidth}x{windowHeight}");
         }
         
         // Public method to toggle cheat GUI from button click (mobile support)
@@ -89,25 +120,27 @@ namespace CardMatch
             
             // Game Flow Controls
             DrawFoldableSection("=== GAME FLOW ===", ref gameFlowExpanded, () => {
-                if (GUILayout.Button("Win Current Level", GUILayout.Height(35)))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Win\nLevel", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatWinLevel();
                 }
-                
-                if (GUILayout.Button("Lose Current Level", GUILayout.Height(35)))
+                if (GUILayout.Button("Lose\nLevel", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatLoseLevel();
                 }
+                GUILayout.EndHorizontal();
                 
-                if (GUILayout.Button("Next Level", GUILayout.Height(35)))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Next\nLevel", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatNextLevel();
                 }
-                
-                if (GUILayout.Button("Restart Level", GUILayout.Height(35)))
+                if (GUILayout.Button("Restart\nLevel", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatRestartLevel();
                 }
+                GUILayout.EndHorizontal();
             });
             
             GUILayout.Space(10);
@@ -115,55 +148,49 @@ namespace CardMatch
             // Level Management
             DrawFoldableSection("=== LEVEL MANAGEMENT ===", ref levelManagementExpanded, () => {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Level 1", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("1", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(1);
                 }
-                if (GUILayout.Button("Level 5", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("5", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(5);
                 }
-                GUILayout.EndHorizontal();
-                
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Level 10", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("10", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(10);
                 }
-                if (GUILayout.Button("Level 15", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("15", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(15);
                 }
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Level 20", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("20", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(20);
                 }
-                if (GUILayout.Button("Level 24", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("24", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(24);
                 }
-                GUILayout.EndHorizontal();
-                
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Level 25", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("25", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(25);
                 }
-                if (GUILayout.Button("Level 30", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("30", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(30);
                 }
                 GUILayout.EndHorizontal();
                 
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Level 35", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("35", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(35);
                 }
-                if (GUILayout.Button("Level 40", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("40", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatGoToLevel(40);
                 }
@@ -175,17 +202,17 @@ namespace CardMatch
             // Score Management
             DrawFoldableSection("=== SCORE MANAGEMENT ===", ref scoreManagementExpanded, () => {
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("+100 Points", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("+100", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatAddScore(100);
                 }
-                if (GUILayout.Button("+500 Points", GUILayout.Height(30), GUILayout.ExpandWidth(true)))
+                if (GUILayout.Button("+500", GUILayout.Height(60), GUILayout.Width(60)))
                 {
                     CheatAddScore(500);
                 }
                 GUILayout.EndHorizontal();
                 
-                if (GUILayout.Button("Reset Score", GUILayout.Height(35)))
+                if (GUILayout.Button("Reset\nScore", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatResetScore();
                 }
@@ -195,15 +222,16 @@ namespace CardMatch
             
             // Game Reset
             DrawFoldableSection("=== GAME RESET ===", ref gameResetExpanded, () => {
-                if (GUILayout.Button("Reset Game", GUILayout.Height(35)))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Reset\nGame", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatResetGame();
                 }
-                
-                if (GUILayout.Button("Delete Save Data", GUILayout.Height(35)))
+                if (GUILayout.Button("Delete\nSave", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     CheatDeleteSaveData();
                 }
+                GUILayout.EndHorizontal();
             });
             
             GUILayout.Space(10);
@@ -227,31 +255,33 @@ namespace CardMatch
                 
                 GUILayout.Space(5);
                 
+                GUILayout.BeginHorizontal();
                 if (!isAutoPlaying)
                 {
-                    if (GUILayout.Button("Start Auto Play", GUILayout.Height(35)))
+                    if (GUILayout.Button("Start\nAuto", GUILayout.Height(72), GUILayout.Width(72)))
                     {
                         StartAutoPlay();
                     }
                 }
                 else
                 {
-                    if (GUILayout.Button("Stop Auto Play", GUILayout.Height(35)))
+                    if (GUILayout.Button("Stop\nAuto", GUILayout.Height(72), GUILayout.Width(72)))
                     {
                         StopAutoPlay();
                     }
                 }
                 
-                if (GUILayout.Button("Auto Play Current Level", GUILayout.Height(35)))
+                if (GUILayout.Button("Auto\nLevel", GUILayout.Height(72), GUILayout.Width(72)))
                 {
                     AutoPlayCurrentLevel();
                 }
+                GUILayout.EndHorizontal();
             });
             
             GUILayout.Space(10);
             
             // Close button
-            if (GUILayout.Button("Close", GUILayout.Height(40)))
+            if (GUILayout.Button("Close", GUILayout.Height(72), GUILayout.Width(72)))
             {
                 showCheatGUI = false;
             }
